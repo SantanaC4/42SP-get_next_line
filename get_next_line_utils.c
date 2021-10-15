@@ -6,13 +6,13 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/09 14:40:59 by edrodrig          #+#    #+#             */
-/*   Updated: 2021/10/13 18:00:02 by edrodrig         ###   ########.fr       */
+/*   Updated: 2021/10/14 23:58:56 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen( char *s)
 {
 	size_t	i;
 
@@ -23,14 +23,16 @@ size_t	ft_strlen(const char *s)
 		i++;
 	return (i);
 }
-char	*ft_strchr(const char *str, int c)
+char	*ft_strchr(char *s, int c)
 {
-	while (*str != (char)c)
-		if (*str++ == '\0')
+	if (!s)
+		    return (0);
+	while (*s != (char)c)
+		if (*s++ == '\0')
 			return (NULL);
-	return ((char *)str);
+	return ((char *)s);
 }
-char	*ft_strdup(const char *s)
+char	*ft_strdup( char *s)
 {
 	char	*n;
 
@@ -41,7 +43,7 @@ char	*ft_strdup(const char *s)
 	return (n);
 }
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+size_t	ft_strlcpy(char *dst,  char *src, size_t size)
 {
 	size_t	len_src;
 
@@ -56,27 +58,7 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	}
 	return (len_src);
 }
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*n;
-	size_t	new_len;
-
-	if (s == NULL)
-		return (NULL);
-	if ((unsigned int)ft_strlen(s) < start)
-		return (ft_strdup(""));
-	new_len = ft_strlen(s + start);
-	if (new_len < len)
-		len = new_len;
-	n = malloc((len + 1) * sizeof(char));
-	if (n == NULL)
-		return (NULL);
-	ft_strlcpy(n, s + start, len + 1);
-	return (n);
-}
-
-void	*ft_memcpy(void *dest, const void *src, size_t n)
+void	*ft_memcpy(void *dest,  void *src, size_t n)
 {
 	unsigned char	*dest_cast;
 	unsigned char	*src_cast;
@@ -87,17 +69,20 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 		*dest_cast++ = *src_cast++;
 	return (dest);
 }
-
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*n;
 
-	if (!s1 || !s2)
-		return (NULL);
+	if (!s1)
+	{
+		s1 = (char *)malloc(1 * sizeof(char));
+		s1[0] = '\0';
+	}
 	n = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (n == NULL)
+	if (!s1 || !s2 || !n)
 		return (NULL);
 	ft_memcpy(n, s1, ft_strlen(s1));
 	ft_strlcpy(n + ft_strlen(s1), s2, ft_strlen(s2) + 1);
+    free(s1);
 	return (n);
 }

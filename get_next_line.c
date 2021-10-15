@@ -6,26 +6,30 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/19 22:46:26 by edrodrig          #+#    #+#             */
-/*   Updated: 2021/10/13 17:57:51 by edrodrig         ###   ########.fr       */
+/*   Updated: 2021/10/15 00:04:49 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char *get_line(char *x)
+char *get_line(char *x)
 {
     size_t i;
     char *line;
 
     i = 0;
-    while (x[i++] != '\n');
+    if (!x[i])
+        return (NULL);
+    while (x[i] && x[i++] != '\n');
     line = malloc(sizeof(char) * (i + 1));
-    line[i + 1] = '\0';
+    if (!line)
+        return (NULL);
+    line[i] = '\0';
     while (i--)
         line[i] = x[i];
     return (line);
 }
-static char	*get_newline_chr(int fd, char *backup)
+char	*get_newline_chr(int fd, char *backup)
 {
 	char	*buff;
 	int		rd_bytes;
@@ -48,35 +52,34 @@ static char	*get_newline_chr(int fd, char *backup)
 	free(buff);
 	return (backup);
 }
+char *new_backup(char *backup)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	while (backup[i] && backup[i++] != '\n');
+	if (!backup[i])
+	{
+		free(backup);
+		return (NULL);
+	}
+    str = ft_strdup(ft_strchr(backup, '\n') + 1);
+	free(backup);
+	return (str);
+}
+
 char *get_next_line(int fd)
 {
     static char *backup;
     char *result;
-    char *temp;
 
-    if (!backup)
-	{
-		backup = (char *)malloc(1 * sizeof(char));
-		backup[0] = '\0';
-	}
-	if (!backup)
+    if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-    if (ft_strchr(backup, '\n'))
-    {
-        result = get_line(backup);
-        temp = ft_strdup(ft_strchr(backup, '\n') + 1);
-        free(backup);
-        backup = temp;
-    }
-    else
-    {
-        backup = get_newline_chr(fd, backup);
-        result = get_line(backup);
-        temp = ft_strdup(ft_strchr(backup, '\n') + 1);
-        free(backup);
-        backup = temp;
-    }
-
+    backup = get_newline_chr(fd, backup);
+    if (!backup)
+        return (NULL);
+    result = get_line(backup);
+    backup = new_backup(backup);
     return (result);
 }
-
