@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/09/19 22:46:26 by edrodrig          #+#    #+#             */
-/*   Updated: 2021/10/15 22:23:46 by edrodrig         ###   ########.fr       */
+/*   Updated: 2021/10/16 00:00:26 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,14 +76,14 @@ char	*new_backup(char *backup)
 char	*get_next_line(int fd)
 {
 	char			*result;
-	static char		*backup;
+	static char		*backup[4096];
 
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
-	backup = get_newline_chr(fd, backup);
-	if (!backup)
+	backup[fd] = get_newline_chr(fd, backup[fd]);
+	if (!backup[fd])
 		return (NULL);
-	result = get_line(backup);
-	backup = new_backup(backup);
+	result = get_line(backup[fd]);
+	backup[fd] = new_backup(backup[fd]);
 	return (result);
 }
